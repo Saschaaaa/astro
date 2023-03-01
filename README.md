@@ -1,54 +1,64 @@
-# Astro Starter Kit: Basics
+# Astro Just another Movie Databases
+JAMDB is a website based on the Astro Framework that allows you to search for Movies and lookup up ratings based 
+on well known online critics like Rotten Tomatoes, Metacritic and the Internet Movie Database.
 
-```
-npm create astro@latest -- --template basics
-```
+For access the data we are using the TMDB and OMDB API. Via TMDB we request Data for the general search and details of any movie.
+Since TMDB only got their own Movie Rating we are using another API called OMDB to get ratings of more well known Services.
+This works pretty well since TMDB also supplies a ID which can be used to lookup ratings of on the OMDB API.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
+More Information regarding the APIs can be found here.  
+TMDB https://developers.themoviedb.org/3/getting-started/introduction  
+OMDB https://www.omdbapi.com/
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-![basics](https://user-images.githubusercontent.com/4677417/186188965-73453154-fdec-4d6b-9c34-cb35c248ae5b.png)
-
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
+## Project structure
 ```
 /
 ├── public/
+│   ├── images/
+│   │   ├── no-image.svg.png
+│   │   └── tmdb_logo.svg
 │   └── favicon.svg
 ├── src/
 │   ├── components/
-│   │   └── Card.astro
+│   │   ├── Card.astro
+│   │   ├── Paginate.astro
+│   │   └── Ratings.astro
+│   └── Ratings.astro
 │   ├── layouts/
 │   │   └── Layout.astro
 │   └── pages/
+│       ├── details.astro
 │       └── index.astro
 └── package.json
 ```
+## Astro
+In this project I've used looked into the Astro Framework and built this website based on it.
+Astro is a Framework for content focused Websites and is super fast based on the approach to ship zero Javascript per default to the client.#
+Per design Astro is a static site Generator which uses Client-Side-Rendering although Server-Side-Rendering is supported as well.
+In this Project we mainly used the templating functions as well as some styling via the Tailwind CSS integration.
+Another great feature is the island architecture of astro.
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Astro provides support for many other integrations. More detailed informations can be found on the offical docs.
+https://docs.astro.build/en/guides/integrations-guide/
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Main Page
+On the main page I've implemented a basic search via the API to search any movie.
+Per default the API look for the Top Rated Movies if no search string is given.
+Upon entering a search term into the field and pressing enter we request the same page with a URL Parameter which has out search term assigned.
 
-## 🧞 Commands
+In order to work with URL Parameters Server-Side-Rendering had to be enabled, as it's not possible to determine them ahead of time during the static build.
+I've decided to use URL Parameters because I believe anyone should this was I could still work with zero Javascript and basicly generate the full site with search results based on the requested URL. There are different approaches on how to do this but this is for sure a very fast one.
+https://docs.astro.build/en/reference/api-reference/#astrorequest
 
-All commands are run from the root of the project, from a terminal:
+This will be used to make a custom API request for that searchterm. From the API we get a response in Form of a JSON Object which will then be displayed via the Card Component. The Card component  basicly is a component that gets Data of a single movie passed onto and then creates a card with an Image, Title, Year and link to the details Page of that movie.
 
-| Command                | Action                                           |
-| :--------------------- | :----------------------------------------------- |
-| `npm install`          | Installs dependencies                            |
-| `npm run dev`          | Starts local dev server at `localhost:3000`      |
-| `npm run build`        | Build your production site to `./dist/`          |
-| `npm run preview`      | Preview your build locally, before deploying     |
-| `npm run astro ...`    | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro --help` | Get help using the Astro CLI                     |
+Below the searchfield I've added a paginations Component fully based on the html and Astro's templating features and for the styling some simple tailwind classes.
 
-## 👀 Want to learn more?
+## Details Page
+On this page more details Informations regardings the Movie is displayed as well as
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+## Conclusion
+Astro is a super fast and innovative frameworks which supposed so many integrations that any web devloper should find what he's looking for.
+It's very good choice for static Websites like blogs, portfolios and e-commerce websites. Espicially for blogs astro and out of the box a lot of feature like pagination and more. It's easy to use and there are already plenty of templates and themes to work with.

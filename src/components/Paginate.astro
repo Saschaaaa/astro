@@ -1,0 +1,53 @@
+---
+// PAGINATION COMPONENT
+
+export interface Props{
+    current_page: number;
+    total_pages: number;
+    search_query: string;
+}
+const { current_page, total_pages, search_query } = Astro.props;
+
+const search = (search_query) ? "search=" + search_query + "&" : ""
+
+// only display pagination there is  more than 1 page
+---
+
+{total_pages > 1 ? 
+<div class=" text-3xl flex justify-center">
+    <nav aria-label="Page navigation example">
+      <ul class="flex list-style-none">
+        { current_page > 1 ?    <li class="page-item"><a
+            class="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
+            href={"?"+search+"page="+(current_page-1).toString()} aria-label="Next">
+            <span aria-hidden="true">&laquo;</span>
+            </a></li> : "" }
+        { current_page >= 3 ? <li class="page-item"><a
+            class="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
+            href={"?"+search+"page="+(current_page-2).toString()}>{current_page-2}</a></li> : "" }
+        { current_page >= 2 ? <li class="page-item"><a
+            class="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
+            href={"?"+search+"page="+(current_page-1).toString()}>{current_page-1}</a></li> : "" }    
+        <li class="page-item"><a
+            class="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 bg-gray-200 focus:shadow-none"
+            href="">{current_page}</a></li>
+        { current_page < total_pages ? <li class="page-item"><a
+            class="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
+            href={"?"+search+"page="+(current_page+1).toString()}>{current_page+1}</a></li> : "" }
+        { current_page < total_pages-1 ?         <li class="page-item"><a
+            class="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
+            href={"?"+search+"page="+(current_page+2).toString()}>{current_page+2}</a></li> : "" }
+        { current_page < total_pages-1 && total_pages > 1 ? <li class="page-item"><a
+            class="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
+            href={"?"+search+"page="+(current_page+1).toString()} aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a></li> : "" }    
+      </ul>
+    </nav>
+</div>
+: ""}
+
+
+
+
+

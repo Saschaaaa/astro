@@ -1,26 +1,53 @@
 ---
+// CARD COMPONENT
+
 export interface Props {
+	id: string;
 	title: string;
-	body: string;
+	release_date: string;
+	poster_path : string;
+	backdrop_path : string;
 	href: string;
+	prev_page: string;
+	page: string;
 }
 
-const { href, title, body } = Astro.props;
+// image stuff
+const no_img = `${Astro.url.protocol}//${Astro.url.host}/images/no-image.svg.png`
+const { id, title, release_date, poster_path, backdrop_path, imdb_id, href, prev_page, page} = Astro.props;
+const baseurl = "https://image.tmdb.org/t/p/w500"
+// check which img to use
+let fullimg;
+if ( poster_path != null){
+	fullimg = baseurl + poster_path
+} else if ( backdrop_path != null){
+	fullimg = baseurl + backdrop_path
+} else {
+	fullimg = no_img	
+}
+
+// year stuff
+const year = release_date.substring(0,4)
+
+//remove whitespace
+let prev = prev_page.replace(/\s/g, '\+');
 ---
 
 <li class="link-card">
-	<a href={href}>
+	<a href={href + '&prev_page=' + prev + '&cur=' + page}>
+		<p>
+			<img src={fullimg} width="200px" height="300px">
+		</p>
+		<br>
 		<h2>
-			{title}
+			{year != "" ? "("+year+")" : ""} {title}
 			<span>&rarr;</span>
 		</h2>
-		<p>
-			{body}
-		</p>
 	</a>
 </li>
 <style>
 	.link-card {
+		width: 235px;
 		list-style: none;
 		display: flex;
 		padding: 0.25rem;

@@ -1,37 +1,108 @@
 ---
+// import of components and layout
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
+import Paginate from '../components/Paginate.astro';
+
+// get search param from url
+const search_query = Astro.url.searchParams.get('search')! || '';
+
+// get page param from url
+let current_page = Astro.url.searchParams.get('page')! || '';
+if (current_page == ""){	// if none is set, set to 1
+	let num = 1;
+	current_page = num.toString();
+}
+
+console.log(import.meta.env.TMDB_API_KEY)
+
+// fetch data depending on search parameter
+let response;
+let override_total_pages;
+let total_pages;
+if (search_query){
+	// search request for search parameters
+	response = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${import.meta.env.TMDB_API_KEY}&language=en&query=${search_query}&page=${current_page}&include_adult=false`)
+} else {
+	// default request for top rated movies
+    response = await fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${import.meta.env.TMDB_API_KEY}&language=en&page=${current_page}`)
+	override_total_pages = true;
+}
+const res = await response.json();
+
+if(override_total_pages){
+	total_pages = 500;	// set total pages to 500 for pagination since the actual amount of pages returns an error
+} else {
+	total_pages = res.total_pages;
+}
+
+const tmdb_logo = `${Astro.url.protocol}//${Astro.url.host}/images/tmdb_logo.svg`
+
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout title="MovieDB">
 	<main>
-		<h1>Welcome to <span class="text-gradient">Astro</span></h1>
-		<p class="instructions">
-			To get started, open the directory <code>src/pages</code> in your project.<br />
-			<strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
-		</p>
-		<ul role="list" class="link-card-grid">
+		<h1 class="text-center"><span class="text-gradient">Just another MovieDB</span></h1>
+		<br>
+		<div class='max-w-md mx-auto'>
+			<div class="relative flex items-center w-full h-12 rounded-lg focus-within:shadow-lg bg-white overflow-hidden">
+				<button class="grid place-items-center h-full w-12 text-gray-300" type="submit" form="form1" value="Submit">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+					</svg>
+				</button>
+				<form id="form1" action="/" method="get" class="peer h-full w-full outline-none text-sm text-gray-700 pr-2">
+					<input
+					class="peer h-full w-full outline-none text-gray-700 pr-2 text-lg"
+					type="text"
+					id="search"
+					name="search"
+					placeholder="Search.."
+					value={search_query != null ? search_query : ""} /> 
+				</form> 	
+			</div>
+		</div>
+		<br>
+		{ res.total_results > 0 ? "" : 
+		<div class=" text-center w-1/2 mx-auto my-10 text-gray-500">
+			<h2>Nothing found...</h2>	
+		</div>}
+
+		<Paginate
+		current_page={parseInt(current_page)}
+		total_pages={total_pages}
+		search_query={search_query}
+		/>	
+		
+		<br>
+        <ul role="list" class="link-card-grid">
+			{res.results.map((movie : any) => 
 			<Card
-				href="https://docs.astro.build/"
-				title="Documentation"
-				body="Learn how Astro works and explore the official API docs."
-			/>
-			<Card
-				href="https://astro.build/integrations/"
-				title="Integrations"
-				body="Supercharge your project with new frameworks and libraries."
-			/>
-			<Card
-				href="https://astro.build/themes/"
-				title="Themes"
-				body="Explore a galaxy of community-built starter themes."
-			/>
-			<Card
-				href="https://astro.build/chat/"
-				title="Community"
-				body="Come say hi to our amazing Discord community. ❤️"
-			/>
+                id={movie.id}
+                title={movie.title}
+                release_date={movie.release_date}
+                backdrop_path={movie.backdrop_path}
+                poster_path={movie.poster_path}
+                href={'/details/?id=' + movie.id}
+				prev_page={search_query != null ? search_query : ""}
+				page={current_page}
+			/>)}
 		</ul>
+		<br>
+		<Paginate
+		current_page={parseInt(current_page)}
+		total_pages={total_pages}
+		search_query={search_query}
+		/>
+		<div class="flex flex-col items-center instructions mx-auto">
+			<div class="">
+				Just another MovieDB is a simple way to lookup any Movie and provides basic informations as well as ratings.
+				<br>JAMDB is powerved by the offical TMDB and OMDB api.
+			</div>	
+			<div class="container mx-auto w-full text-center my-2">
+				<a href="https://www.themoviedb.org/"><img class="mx-auto" src={tmdb_logo} width="100px"></a>
+			</div>
+		</div>
 	</main>
 </Layout>
 
@@ -39,11 +110,16 @@ import Card from '../components/Card.astro';
 	main {
 		margin: auto;
 		padding: 1.5rem;
-		max-width: 60ch;
+		max-width: 120ch;
 	}
 	h1 {
-		font-size: 3rem;
+		font-size: 4rem;
 		font-weight: 800;
+		margin: 0;
+	}
+	h2 {
+		font-size: 3rem;
+		font-weight: 600;
 		margin: 0;
 	}
 	.text-gradient {

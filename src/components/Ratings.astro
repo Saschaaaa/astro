@@ -1,0 +1,104 @@
+---
+// RATINGS COMPONENT
+
+export interface Props {
+    ratings: any;
+}
+
+const {ratings} = Astro.props;
+
+// ratings values
+let imdb : string = ""
+let rotten : string = ""
+let meta : string = ""
+
+let display : boolean = false;
+
+// check if ratings are available
+if (ratings != undefined) {
+    display = true;
+    ratings.forEach((element:any) => {
+        switch(element.Source) {
+            case "Internet Movie Database":
+                imdb = element.Value;
+                break;
+            case "Rotten Tomatoes":
+                rotten = element.Value;
+                break;
+            case "Metacritic":
+                meta = element.Value;
+                break;
+        }
+    });
+}
+
+//check if ratings are assigned
+if(imdb == ""){
+    imdb = "N/A";
+}
+if(rotten == ""){
+    rotten = "N/A";
+}
+if(meta == ""){
+    meta = "N/A";
+}
+
+// prepare values for progress bar
+let imdb_nr : number = 0;
+let rotten_nr : number = 0;
+let meta_nr : number = 0;
+
+// check if they are available and convert to number format we need
+if(imdb != "N/A"){
+    const temp_imdb = imdb.replace(/\./g,'');
+    imdb_nr = parseInt(temp_imdb);
+}
+if(rotten != "N/A"){
+    const temp_rotten = rotten.replace(/\%/g,'');
+    rotten_nr = parseInt(temp_rotten);
+}
+if(meta != "N/A"){
+    meta_nr = parseInt(meta);
+}
+
+---
+			
+<h1 class="mb-2 text-xl text-center">Ratings</h1>
+
+<div class="gap-8 sm:grid sm:grid-cols-1">
+    <div>
+        <dl>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-600">IMDB</dt>
+            <dd class="flex items-center mb-3">
+                <div class="w-28 bg-gray-200 rounded h-2.5 dark:bg-gray-700 mr-2">
+                    <div class="bg-blue-600 h-2.5 rounded dark:bg-blue-500" style={"width:" + imdb_nr + "%"}></div>
+                </div>
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-600">{imdb}</span>
+            </dd>
+        </dl>
+        <dl>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-600">Rotten Tomatoes</dt>
+            <dd class="flex items-center mb-3">
+                <div class="w-28 bg-gray-200 rounded h-2.5 dark:bg-gray-700 mr-2">
+                    <div class="bg-blue-600 h-2.5 rounded dark:bg-blue-500" style={"width:" + rotten_nr +"%"}></div>
+                </div>
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-600">{rotten}</span>
+            </dd>
+        </dl>
+        <dl>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-600">Metacritic</dt>
+            <dd class="flex items-center mb-3">
+                <div class="w-28 bg-gray-200 rounded h-2.5 dark:bg-gray-700 mr-2">
+                    <div class="bg-blue-600 h-2.5 rounded dark:bg-blue-500" style={"width:" + meta_nr +"%"}></div>
+                </div>
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-600">{meta}</span>
+            </dd>
+        </dl>       
+    </div>
+</div>
+
+
+
+
+
+
