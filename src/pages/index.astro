@@ -14,8 +14,6 @@ if (current_page == ""){	// if none is set, set to 1
 	current_page = num.toString();
 }
 
-console.log(import.meta.env.TMDB_API_KEY)
-
 // fetch data depending on search parameter
 let response;
 let override_total_pages;
@@ -40,7 +38,7 @@ const tmdb_logo = `${Astro.url.protocol}//${Astro.url.host}/images/tmdb_logo.svg
 
 ---
 
-<Layout title="MovieDB">
+<Layout title="Just another MovieDB">
 	<main>
 		<h1 class="text-center"><span class="text-gradient">Just another MovieDB</span></h1>
 		<br>

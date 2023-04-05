@@ -7,12 +7,10 @@ export interface Props{
     search_query: string;
 }
 const { current_page, total_pages, search_query } = Astro.props;
-
 const search = (search_query) ? "search=" + search_query + "&" : ""
 
-// only display pagination there is  more than 1 page
+// only display pagination if there is more than 1 page
 ---
-
 {total_pages > 1 ? 
 <div class=" text-3xl flex justify-center">
     <nav aria-label="Page navigation example">
@@ -46,8 +44,3 @@ const search = (search_query) ? "search=" + search_query + "&" : ""
     </nav>
 </div>
 : ""}
-
-
-
-
-
